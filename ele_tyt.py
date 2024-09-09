@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 """
-cron: 15 2 * * *
+cron: 15 4,15 * * *
 new Env('饿了么跳一跳');
 """
 import hashlib
