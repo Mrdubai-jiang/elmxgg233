@@ -1,9 +1,3 @@
-"""
-cron: 10 2 * * *
-new Env('饿了么果园');
-"""
-
-
 import json
 import os
 import random
@@ -12,11 +6,9 @@ import requests
 from urllib.parse import quote
 from datetime import datetime, date
 
-nczlck = os.environ.get('nczlck')
+nczlck = os.environ.get('elmck')
 
-
-with open('./ck1.txt', 'r', encoding='utf-8') as file:
-    ck = file.read().strip()
+ck = ''
 
 def tq(txt):
     try:
@@ -40,10 +32,10 @@ class LYB:
         self.token = self.cki.get("token")
         self.deviceId = self.cki.get("deviceId")
         self.host = 'https://acs.m.goofish.com'
-        self.name1 = get_ck_usid(cki)
+        self.name1 = self.uid
 
     def xsign(self, api, data, wua, v):
-        url = os.environ.get('signhost')
+     url = os.environ.get('signhost')
         body = {
             "data": data,
             "api": api,
@@ -61,7 +53,7 @@ class LYB:
         retries = 0
         while retries < max_retries:
             try:
-                r = requests.post(url, json=body, timeout=15)
+                r = requests.post(url, json=body, timeout=9)
                 r.raise_for_status()
                 return r.json()
             except requests.exceptions.HTTPError as e:
@@ -77,7 +69,7 @@ class LYB:
                 return self.xsign1(api, data, wua, v)
 
     def xsign1(self, api, data, wua, v):
-        url = "http://222.222.222:2222/api/getXSign"
+        url = "http://124.71.214.109:9999/api/getXSign"
         body = {
             "data": data,
             "api": api,
@@ -95,7 +87,7 @@ class LYB:
         retries = 0
         while retries < max_retries:
             try:
-                r = requests.post(url, json=body, timeout=15)
+                r = requests.post(url, json=body, timeout=9)
                 r.raise_for_status()
                 return r.json()
             except requests.exceptions.HTTPError as e:
@@ -111,7 +103,7 @@ class LYB:
                 return self.xsign2(api, data, wua, v)
 
     def xsign2(self, api, data, wua, v):
-        url = "http://111.111.111.111/api/getXSign"
+        url = "http://x111.bdwl.asia/api/getXSign"
         body = {
             "data": data,
             "api": api,
@@ -129,7 +121,7 @@ class LYB:
         retries = 0
         while retries < max_retries:
             try:
-                r = requests.post(url, json=body, timeout=15)
+                r = requests.post(url, json=body, timeout=9)
                 r.raise_for_status()
                 return r.json()
             except requests.exceptions.HTTPError as e:
@@ -368,14 +360,8 @@ class LYB:
             return None
 
     def warte(self):
-        amount = 0
-        y = None
-        roleId = None
-        dygk = 0
-        xygk = 0
-        templateId = None
-        templateId1 = None
-        Sunlightvalue = 0
+        y, roleId, templateId, templateId1 = None, None, None, None
+        amount, dygk, xygk, Sunlightvalue, remainingProgress = 0, 0, 0, 0, 0
         api = 'mtop.alsc.playgame.orchard.index.batch.query'
         data1 = json.dumps({
             "blockRequestList": "[{\"blockCode\":\"603040_6723057310\",\"status\":\"PUBLISH\",\"tagCallWay\":\"SYNC\",\"useRequestBlockTags\":false}]",
@@ -408,10 +394,12 @@ class LYB:
                     for role_info in result["roleInfoDtoList"]:
                         for cc in role_info["rolePropertyInfoDtoList"]:
                             Sunlightvalue = cc["totalPropertyCnt"]
+                            remainingProgress = role_info['roleLevelExpInfoDto']["remainingProgress"]
+                            levelName = role_info['roleLevelExpInfoDto']["levelName"]
                             print(
-                                f"✅水滴:{y}g\n✅可浇水：{amount}次\n✅阳光值: {Sunlightvalue}\n✅大阳光卡数量: {dygk}\n✅小阳光卡数量: {xygk}")
+                                f"✅水滴:{y}g\n✅可浇水：{amount}次\n✅阳光值: {Sunlightvalue}\n✅大阳光卡数量: {dygk}\n✅小阳光卡数量: {xygk}\n✅再浇水: {remainingProgress}%可{levelName}")
                             if int(Sunlightvalue) != 100:
-                                if int(dygk) >= 1:
+                                if int(dygk) >= 1 and int(Sunlightvalue) <= 70:
                                     print(f"[{self.name}] ✅使用大阳光卡")
                                     for i in range(int(dygk)):
                                         api = 'mtop.alsc.playgame.orchard.roleoperate.useprop'
@@ -420,13 +408,18 @@ class LYB:
                                                            "extParams": "{\"orchardVersion\":\"20240624\",\"popWindowVersion\":\"V2\"}"})
                                         res = self.req(api, data, 'False', "1.0")
                                         if res.json()["ret"][0] == "SUCCESS::调用成功":
-                                            print(f"[{self.name}] ✅第[{i + 1}]次使用大阳光卡成功")
+                                            ygz = \
+                                                res.json()['data']['data']['roleInfoDTO']['rolePropertyInfoDtoList'][0][
+                                                    "totalPropertyCnt"]
+                                            print(f"[{self.name}] ✅第[{i + 1}]次使用大阳光卡成功，当前阳光值:{ygz}")
+                                            if 90 > int(ygz) > 80:
+                                                print(f"[{self.name}] ✅阳光值达到80-90，停止使用大阳光卡")
+                                                break
                                         elif res.json()["ret"][0] == "FAIL_BIZ_ROLE_USING_PROP_ENOUGH::已经是满状态":
                                             print(f"[{self.name}] ✅阳光值达到100，停止使用阳光卡")
                                             break
                                         else:
                                             print(f"[{self.name}] ❎第[{i + 1}]次使用大阳光卡失败:{res.text}")
-
                                 elif int(xygk) >= 1:
                                     print(f"[{self.name}] ✅使用小阳光卡")
                                     for i in range(int(xygk)):
@@ -437,6 +430,7 @@ class LYB:
                                         res = self.req(api, data, 'False', "1.0")
                                         if res.json()["ret"][0] == "SUCCESS::调用成功":
                                             print(f"[{self.name}] ✅第[{i + 1}]次使用小阳光卡成功")
+
                                         elif res.json()["ret"][0] == "FAIL_BIZ_ROLE_USING_PROP_ENOUGH::已经是满状态":
                                             print(f"[{self.name}] ✅阳光值达到100，停止使用阳光卡")
                                             break
@@ -459,9 +453,7 @@ class LYB:
         amount1, roleId1, Sunlightvalue = self.warte()
         if roleId1 == '0':
             return None
-        if not (int(Sunlightvalue) > 30):
-            print(f"[{self.name}] ❎阳光值小于30，停止浇水")
-            return None
+        
         for i1 in range(amount1):
             api = 'mtop.alsc.playgame.orchard.roleoperate.useprop'
             data2 = json.dumps({
@@ -487,8 +479,9 @@ class LYB:
                     else:
                         progress = progress1
                     total_progress += progress
+                    ygz = rede['data']['data']['roleInfoDTO']['rolePropertyInfoDtoList'][0]['totalPropertyCnt']
                     print(f"[{self.name}] ✅第{total_watering}次浇水成功,获得进度--[{progress}]")
-                    if float(progress) < 0.04:
+                    if float(progress) < 0.02:
                         print(f"[{self.name}] ✅进度小于0.04，停止浇水")
                         break
                     if 'processRewardShow' in rede['data']['data']['roleInfoDTO']['processRewardDTO'] and 'openFlag' in \
@@ -500,7 +493,7 @@ class LYB:
                 else:
                     progress = 1
                     jg = rede['data']['data']['roleInfoDTO']['roleLevelExpInfoDto']['upgradeNeedValue']
-                    zt = rede['data']['data']['roleInfoDTO']['roleLevelExpInfoDto']['nextLevelName']
+                    zt = rede['data']['data']['roleInfoDTO']['roleLevelExpInfoDto']['levelName']
                     total_progress += progress
                     print(f"[{self.name}] ✅第{total_watering}次浇水成功,再浇水[{jg}]次可[{zt}]")
                     if 'processRewardShow' in rede['data']['data']['roleInfoDTO']['processRewardDTO'] and 'openFlag' in \
@@ -539,41 +532,31 @@ class LYB:
     def pk(self):
         def task():
             api = 'mtop.ele.biz.growth.task.core.querytask'
-            data = json.dumps({"bizScene": "ORCHARD", "missionCollectionId": "178", "accountPlan": "HAVANA_COMMON",
+            data2 = json.dumps({"bizScene": "ORCHARD", "missionCollectionId": "178", "accountPlan": "HAVANA_COMMON",
                                "locationInfos": "[\"{\\\"lng\\\":\\\"99.754552\\\",\\\"lat\\\":\\\"99.600419\\\"}\"]"})
             try:
-                res = self.req(api, data, 'False', "1.0")
-                for tag_data in res.json()["data"]["mlist"]:
+                res3 = self.req(api, data2, 'False', "1.0")
+                for tag_data in res3.json()["data"]["mlist"]:
                     for y in tag_data["missionStageDTOS"]:
-                        if y["status"] == "RUNNING":
+                        if y["rewardStatus"] == "TODO":
                             skip_keywords = ['去提款', '神奇', '中国移动', '蚂蚁', '实付', '参与夺宝', '点淘', '快手',
                                              '支付宝', '公益林', '闲鱼', '淘特', '淘宝', '点击3个', '京东', 'UC极速版',
-                                             '飞猪', '天猫', '喜马拉雅', '订阅']
+                                             '飞猪', '天猫', '喜马拉雅', '订阅', '完成实名认证', '完成指定动作奖励阳光卡', '每日餐点领水滴']
                             skip_task = False
                             for keyword in skip_keywords:
                                 if keyword in tag_data["showTitle"]:
                                     skip_task = True
                                     break
-                            runtime = datetime.now().hour
-                            if not (11 <= runtime < 13 or 17 <= runtime < 19 or 21 <= runtime < 23) and tag_data[
-                                "showTitle"] == "每日餐点领水滴":
-                                skip_task = True
                             if skip_task:
                                 continue
-                            name = tag_data["showTitle"]
-                            missionDefId = tag_data["missionDefId"]
+                            name2 = tag_data["showTitle"]
+                            missionDefId1 = tag_data["missionDefId"]
                             if tag_data["showTitle"] == "逛饿了么用户专属淘宝优惠":
                                 count = '3'
                             elif tag_data["showTitle"] == "浏览外卖品质好店":
                                 count = '2'
                             elif '邀请好友助力' in tag_data["showTitle"]:
                                 count = '6'
-                            elif 11 <= runtime < 13 and tag_data["showTitle"] == "每日餐点领水滴":
-                                count = '1'
-                            elif 17 <= runtime < 19 and tag_data["showTitle"] == "每日餐点领水滴":
-                                count = '2'
-                            elif 21 <= runtime < 23 and tag_data["showTitle"] == "每日餐点领水滴":
-                                count = '3'
                             else:
                                 count = '1'
                             pageSpm = tag_data["actionConfig"]["actionValue"].get("pageSpm", "")
@@ -583,7 +566,7 @@ class LYB:
                                 "bizScene": "ORCHARD",
                                 "accountPlan": "HAVANA_COMMON",
                                 "collectionId": "178",
-                                "missionId": missionDefId,
+                                "missionId": missionDefId1,
                                 "actionCode": "PAGEVIEW",
                                 "asac": "2A20B11WIAXCI9QYYXRIR0",
                                 "sync": "false"
@@ -592,36 +575,62 @@ class LYB:
                                 payload['pageFrom'] = pageSpm
                             if pageStageTime:
                                 payload['viewTime'] = pageStageTime
-                            data = json.dumps(payload)
-                            res = self.req(api, data, 'False', "1.0")
-                            if res.json()["ret"][0] == "SUCCESS::接口调用成功":
-                                print(f"[{self.name}] ✅[{name}]任务完成")
-                                which(name, missionDefId, count)
+                            data2 = json.dumps(payload)
+                            res3 = self.req(api, data2, 'False', "1.0")
+                            if res3.json()["ret"][0] == "SUCCESS::接口调用成功":
+                                print(f"[{self.name}] ✅[{name2}]任务完成")
+                                which(name2, missionDefId1, count)
                             else:
-                                print(f"[{self.name}] ❎完成任务失败: {res.json()['ret'][0]}")
+                                print(f"[{self.name}] ❎完成任务失败: {res3.json()['ret'][0]}")
             except Exception as e:
                 print(f"发生错误: {e}")
 
-        def which(name, missionId, count):
-            if name != '每日餐点领水滴' and count != '6':
-                for i in range(1, int(count) + 1):
+        def task1():
+            global missionDefId, name
+            api = 'mtop.ele.biz.growth.task.core.querytask'
+            data2 = json.dumps({"bizScene": "ORCHARD", "missionCollectionId": "178", "accountPlan": "HAVANA_COMMON",
+                               "locationInfos": "[\"{\\\"lng\\\":\\\"99.754552\\\",\\\"lat\\\":\\\"99.600419\\\"}\"]"})
+            try:
+                res = self.req(api, data2, 'False', "1.0")
+                for tag_data in res.json()["data"]["mlist"]:
+                    if tag_data["showTitle"] == "每日餐点领水滴":
+                        for y in tag_data["missionStageDTOS"]:
+                            if y["rewardStatus"] == "TODO":
+                                name = tag_data["showTitle"]
+                                missionDefId = tag_data["missionDefId"]
+                        runtime = datetime.now().hour
+                        if 11 <= runtime < 13:
+                            count = '1'
+                            which(name, missionDefId, count)
+                        elif 17 <= runtime < 19:
+                            count = '2'
+                            which(name, missionDefId, count)
+                        elif 21 <= runtime < 23:
+                            count = '3'
+                            which(name, missionDefId, count)
+            except Exception as e:
+                print(f"发生错误: {e}")
+
+        def which(name1, missionId, count):
+            if name1 != '每日餐点领水滴' and count != '6':
+                for i1 in range(1, int(count) + 1):
                     api = 'mtop.ele.biz.growth.task.core.receiveprize'
-                    data = json.dumps({
+                    data1 = json.dumps({
                         "bizScene": "ORCHARD",
                         "accountPlan": "HAVANA_COMMON",
                         "missionCollectionId": "178",
                         "missionId": missionId,
-                        "count": i,
+                        "count": i1,
                         "locationInfos": "[\"{\\\"lng\\\":99.75325090438128,\\\"lat\\\":99.597472842782736}\"]"
                     })
-                    res = self.req(api, data, 'False', "1.0")
-                    if res.json()["ret"][0] == "SUCCESS::接口调用成功":
-                        print(f"[{self.name}] ✅[{name}]奖励领取成功")
+                    res3 = self.req(api, data1, 'False', "1.0")
+                    if res3.json()["ret"][0] == "SUCCESS::接口调用成功":
+                        print(f"[{self.name}] ✅[{name1}]奖励领取成功")
                     else:
-                        print(f"[{self.name}] ❎[{name}]奖励领取失败: {res.json()['ret'][0]}")
-            elif '邀请好友助力' in name or name == '每日餐点领水滴':
+                        print(f"[{self.name}] ❎[{name1}]奖励领取失败: {res3.json()['ret'][0]}")
+            elif '邀请好友助力' in name1 or name1 == '每日餐点领水滴':
                 api = 'mtop.ele.biz.growth.task.core.receiveprize'
-                data = json.dumps({
+                data1 = json.dumps({
                     "bizScene": "ORCHARD",
                     "accountPlan": "HAVANA_COMMON",
                     "missionCollectionId": "178",
@@ -629,17 +638,30 @@ class LYB:
                     "count": count,
                     "locationInfos": "[\"{\\\"lng\\\":99.75325090438128,\\\"lat\\\":99.597472842782736}\"]"
                 })
-                res = self.req(api, data, 'False', "1.0")
-                if res.json()["ret"][0] == "SUCCESS::接口调用成功":
-                    print(f"[{self.name}] ✅[{name}]奖励领取成功")
+                res3 = self.req(api, data1, 'False', "1.0")
+                if res3.json()["ret"][0] == "SUCCESS::接口调用成功":
+                    print(f"[{self.name}] ✅[{name1}]奖励领取成功")
                 else:
-                    print(f"[{self.name}] ❎[{name}]奖励领取失败: {res.json()['ret'][0]}")
+                    print(f"[{self.name}] ❎[{name1}]奖励领取失败: {res3.json()['ret'][0]}")
 
         task()
+        task1()
+
+    def kb(self):
+        date_time = datetime.now().hour
+        if 7 <= date_time <= 9:
+            api = 'mtop.ele.playgame.orchard.futurewater.receive'
+            data = json.dumps({"bizScene": "KB_ORCHARD"})
+            res = self.req(api, data, 'False', "1.0")
+            if res.json()["ret"][0] == "SUCCESS::调用成功":
+                print(f"[{self.name}] ✅领取成功")
+            else:
+                print(f"[{self.name}] ❎领取失败: {res.json()['ret'][0]}")
 
     def main(self):
         try:
             if self.login():
+                self.kb()
                 # self.signinfo()
                 self.prize()
                 self.pk()
