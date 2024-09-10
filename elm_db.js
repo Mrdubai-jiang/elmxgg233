@@ -1,7 +1,6 @@
-*- coding:utf-8 -*-
-"""
-cron: 35 4,15 * * *
-*/
+/**
+ * cron "11 7,17 * * *" elm.js
+ */
 
 const $ = new Env('饿了么夺宝')
 const axios = require('axios');
