@@ -1,8 +1,7 @@
-/**
- * cron "11 7,17 * * *"
- */
-
-const $ = new Env('饿了么夺宝')
+"""
+cron: 10 4,17 * * *
+new Env('饿了么夺宝');
+"""
 const axios = require('axios');
 const elmSignUrl = process.env.signhost ? process.env.signhost : "http://139.224.135.148:18848/api/getXSign";
 let cookiesArr = []
