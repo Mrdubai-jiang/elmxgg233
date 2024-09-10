@@ -37,7 +37,7 @@ class LYB:
         self.name1 = get_ck_usid(cki)
 
     def xsign(self, api, data, wua, v):
-        url = "http://333.333.333.333/api/getXSign"
+        url = os.environ.get('signhost')
         body = {
             "data": data,
             "api": api,
