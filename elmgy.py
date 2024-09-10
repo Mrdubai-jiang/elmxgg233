@@ -1,3 +1,10 @@
+/**
+ * 
+ * 变量：elmck: 必填，账号cookie
+ * cron: 33 10,14,18,22 * * *
+ */
+
+const $ = new Env('饿了么果园');
 import json
 import os
 import random
