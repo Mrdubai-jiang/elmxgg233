@@ -1,12 +1,7 @@
-/**
- * 饿了么0元夺宝无脑领取版
- * 可环境变量指定SIGN地址:signhost
- * export signhost=''
- * * cron "11 7,17 * * *" elm.js
- * 依赖  axios
- */
-
-const $ = new Env('饿了么夺宝');
+# -*- coding:utf-8 -*-
+"""
+cron: 35 4,15 * * *
+new Env('饿了么夺宝');
 const axios = require('axios');
 const elmSignUrl = process.env.signhost ? process.env.signhost : "http://139.224.135.148:18848/api/getXSign";
 let cookiesArr = []
