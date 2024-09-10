@@ -1,8 +1,8 @@
+# -*- coding:utf-8 -*-
 """
 cron: 10 2 * * *
 new Env('饿了么果园');
 """
-
 
 import json
 import os
