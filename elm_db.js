@@ -2,7 +2,7 @@
  * 饿了么0元夺宝无脑领取版
  * 可环境变量指定SIGN地址:signhost
  * export signhost=''
- *
+ * * cron "11 7,17 * * *" elm.js
  * 依赖  axios
  */
 
